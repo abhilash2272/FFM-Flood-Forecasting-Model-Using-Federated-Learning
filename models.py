@@ -136,28 +136,3 @@ def federated_round(global_model: keras.Model, client_ids: list,
         ),
     }
 
-
-def run_fl_simulation(n_rounds: int = 15, n_clients: int = 18):
-    """
-    Generator that yields per-round metrics for the FL Simulator UI.
-    """
-    global_model = build_ffnn()
-    client_ids = list(range(1, n_clients + 1))
-
-    for rnd in range(1, n_rounds + 1):
-        result = federated_round(global_model, client_ids)
-
-        # Evaluate global model on a held-out test set
-        X_test, y_test = _synthetic_data(0, n=200)
-        _, acc = global_model.evaluate(X_test, y_test, verbose=0)
-
-        yield {
-            "round": rnd,
-            "avg_loss": result["avg_loss"],
-            "client_losses": result["client_losses"],
-            "global_accuracy": round(float(acc) * 100, 1),
-            "weights_kb": result["weights_transferred_kb"],
-            "total_weights_kb": round(
-                result["weights_transferred_kb"] * n_clients, 1
-            ),
-        }
