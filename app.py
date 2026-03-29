@@ -373,7 +373,25 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
 }
 
 /* Streamlit overrides */
-#MainMenu, footer, header { visibility: hidden; }
+#MainMenu, footer { visibility: hidden; }
+header[data-testid="stHeader"] {
+    background: transparent !important;
+    backdrop-filter: none !important;
+}
+button[data-testid="stSidebarCollapseButton"],
+button[data-testid="collapsedControl"] {
+    color: var(--accent-indigo) !important;
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: var(--radius-sm) !important;
+    transition: all 0.25s ease !important;
+}
+button[data-testid="stSidebarCollapseButton"]:hover,
+button[data-testid="collapsedControl"]:hover {
+    background: var(--bg-card-hover) !important;
+    border-color: var(--border-glow) !important;
+    box-shadow: var(--shadow-glow) !important;
+}
 .stSelectbox > div > div { border-color: var(--border-subtle) !important; background: var(--bg-card) !important; }
 .stSlider > div > div > div { color: var(--text-secondary) !important; }
 div[data-testid="stMetricValue"] { font-family: 'JetBrains Mono', monospace !important; }
