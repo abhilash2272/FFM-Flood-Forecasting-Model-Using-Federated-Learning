@@ -245,7 +245,3 @@ The dashboard features a **premium glassmorphism design** with:
 - Responsive layout with hover micro-animations
 
 ---
-
-## 📄 License
-
-This project is licensed under the MIT License.
