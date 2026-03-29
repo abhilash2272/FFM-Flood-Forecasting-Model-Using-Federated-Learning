@@ -1,7 +1,6 @@
 """
-stations.py — 18 Indian flood-monitoring client stations
+stations.py - 18 Indian flood-monitoring stations
 Rivers: Ganga, Brahmaputra, Yamuna, Godavari, Mahanadi
-Data modelled on CWC (Central Water Commission) telemetry patterns.
 """
 
 RIVER_COLORS = {
@@ -20,7 +19,7 @@ RISK_COLORS = {
 }
 
 STATIONS = [
-    # ── Ganga (5 stations) ───────────────────────────────────
+    # Ganga (5 stations)
     {
         "name": "Farakka Barrage",
         "river": "Ganga",
@@ -87,7 +86,7 @@ STATIONS = [
         "precip_efficiency": 0.65,
     },
 
-    # ── Brahmaputra (4 stations) ─────────────────────────────
+    # Brahmaputra (4 stations)
     {
         "name": "Guwahati",
         "river": "Brahmaputra",
@@ -141,7 +140,7 @@ STATIONS = [
         "precip_efficiency": 0.70,
     },
 
-    # ── Yamuna (4 stations) ──────────────────────────────────
+    # Yamuna (4 stations)
     {
         "name": "Delhi (Old Rly Bridge)",
         "river": "Yamuna",
@@ -195,7 +194,7 @@ STATIONS = [
         "precip_efficiency": 0.60,
     },
 
-    # ── Godavari (3 stations) ────────────────────────────────
+    # Godavari (3 stations)
     {
         "name": "Nashik",
         "river": "Godavari",
@@ -236,7 +235,7 @@ STATIONS = [
         "precip_efficiency": 0.71,
     },
 
-    # ── Mahanadi (2 stations) ────────────────────────────────
+    # Mahanadi (2 stations)
     {
         "name": "Hirakud Dam",
         "river": "Mahanadi",

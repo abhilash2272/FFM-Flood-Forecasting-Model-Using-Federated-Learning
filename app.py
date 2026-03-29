@@ -1,7 +1,6 @@
 """
-app.py — FedFlood Dashboard
-📡 Station Monitor  |  ⚡ Risk Predictor  |  🔗 FL Simulator
-Built with Streamlit + TensorFlow, grounded in the FedFlood paper.
+app.py - FedFlood Dashboard
+Station Monitor | Risk Predictor | FL Simulator
 """
 
 import os
@@ -25,9 +24,7 @@ import plotly.graph_objects as go
 from stations import STATIONS, RIVER_COLORS, RISK_COLORS
 from models import build_ffnn, predict_flood_risk, federated_round, _synthetic_data
 
-# ────────────────────────────────────────────────────────────────
 # Page config
-# ────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="FedFlood Dashboard",
     page_icon="🌊",
@@ -35,13 +32,11 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ────────────────────────────────────────────────────────────────
-# Premium CSS Design System
-# ────────────────────────────────────────────────────────────────
+# CSS Design System
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-/* ── CSS Variables ───────────────────────── */
+/* CSS Variables */
 :root {
     --bg-primary: #060b18;
     --bg-secondary: #0c1225;
@@ -65,7 +60,7 @@ st.markdown("""<style>
     --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.08);
 }
 
-/* ── Global ──────────────────────────────── */
+/* Global */
 html, body, [class*="css"] {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -76,7 +71,7 @@ html, body, [class*="css"] {
         radial-gradient(ellipse 60% 40% at 80% 100%, rgba(139,92,246,0.05) 0%, transparent 50%);
 }
 
-/* ── Sidebar ─────────────────────────────── */
+/* Sidebar */
 section[data-testid="stSidebar"] {
     background: linear-gradient(180deg, #0c1225 0%, #111b33 40%, #0f1729 100%);
     border-right: 1px solid var(--border-subtle);
@@ -99,13 +94,13 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
     color: var(--text-primary) !important;
 }
 
-/* ── Scrollbar ───────────────────────────── */
+/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.2); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.4); }
 
-/* ── Glass Cards ─────────────────────────── */
+/* Glass Cards */
 .glass-card {
     background: var(--bg-card);
     backdrop-filter: blur(20px);
@@ -123,7 +118,7 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
     transform: translateY(-1px);
 }
 
-/* ── Station Cards ───────────────────────── */
+/* Station Cards */
 .station-card {
     background: var(--bg-card);
     backdrop-filter: blur(16px);
@@ -150,7 +145,7 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
     transform: translateY(-2px);
 }
 
-/* ── Risk Badges ─────────────────────────── */
+/* Risk Badges */
 .risk-badge {
     display: inline-flex;
     align-items: center;
@@ -186,7 +181,7 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
     to { opacity: 1; transform: scale(1.2); }
 }
 
-/* ── Danger Alert ────────────────────────── */
+/* Danger Alert */
 .danger-alert {
     background: linear-gradient(90deg, rgba(251,113,133,0.1) 0%, rgba(251,113,133,0.03) 100%);
     border: 1px solid rgba(251,113,133,0.2);
@@ -203,7 +198,7 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
     50% { border-left-color: #f43f5e; }
 }
 
-/* ── Metric Boxes ────────────────────────── */
+/* Metric Boxes */
 .metric-box {
     background: var(--bg-card);
     backdrop-filter: blur(12px);
@@ -248,7 +243,7 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
     font-weight: 500;
 }
 
-/* ── Page Headings ───────────────────────── */
+/* Page Headings */
 .page-header {
     margin-bottom: 32px;
     padding-bottom: 24px;
@@ -269,7 +264,7 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
     line-height: 1.5;
 }
 
-/* ── River Tags ──────────────────────────── */
+/* River Tags */
 .river-tag {
     display: inline-block;
     padding: 3px 10px;
@@ -280,7 +275,7 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
     text-transform: uppercase;
 }
 
-/* ── Privacy Banner ──────────────────────── */
+/* Privacy Banner */
 .privacy-banner {
     background: linear-gradient(90deg, rgba(52,211,153,0.08) 0%, rgba(52,211,153,0.02) 100%);
     border: 1px solid rgba(52,211,153,0.2);
@@ -292,7 +287,7 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
     font-size: 0.88rem;
 }
 
-/* ── FL Dots ─────────────────────────────── */
+/* FL Dots */
 .fl-dot {
     display: inline-block;
     width: 8px; height: 8px;
@@ -305,7 +300,7 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
     to { opacity: 1; transform: scale(1.1); }
 }
 
-/* ── Section Headers ─────────────────────── */
+/* Section Headers */
 .section-header {
     font-size: 1.15rem;
     font-weight: 700;
@@ -322,7 +317,7 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
     background: linear-gradient(90deg, var(--border-subtle), transparent);
 }
 
-/* ── Data Grid ───────────────────────────── */
+/* Data Grid */
 .data-row {
     display: flex;
     justify-content: space-between;
@@ -333,7 +328,7 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
 .data-label { color: var(--text-muted); }
 .data-value { color: var(--text-primary); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
 
-/* ── Risk Bar ────────────────────────────── */
+/* Risk Bar */
 .risk-bar-bg {
     background: rgba(255,255,255,0.04);
     border-radius: 6px;
@@ -356,7 +351,7 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
     border-radius: 0 6px 6px 0;
 }
 
-/* ── Prob gauge ───────────────────────────── */
+/* Probability Gauge */
 .prob-gauge {
     position: relative;
     text-align: center;
@@ -377,7 +372,7 @@ section[data-testid="stSidebar"] .stRadio > div [data-testid="stMarkdownContaine
     margin-top: 12px;
 }
 
-/* ── Streamlit overrides ─────────────────── */
+/* Streamlit overrides */
 #MainMenu, footer, header { visibility: hidden; }
 .stSelectbox > div > div { border-color: var(--border-subtle) !important; background: var(--bg-card) !important; }
 .stSlider > div > div > div { color: var(--text-secondary) !important; }
@@ -396,7 +391,7 @@ button[kind="primary"]:hover {
 }
 div.stCodeBlock { border: 1px solid var(--border-subtle) !important; border-radius: var(--radius-md) !important; }
 
-/* ── Animations ──────────────────────────── */
+/* Animations */
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
@@ -408,9 +403,7 @@ div.stCodeBlock { border: 1px solid var(--border-subtle) !important; border-radi
 </style>""", unsafe_allow_html=True)
 
 
-# ────────────────────────────────────────────────────────────────
-# Plotly premium dark template
-# ────────────────────────────────────────────────────────────────
+# Plotly dark template
 PLOTLY_LAYOUT = dict(
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
@@ -434,9 +427,7 @@ PLOTLY_LAYOUT = dict(
 )
 
 
-# ────────────────────────────────────────────────────────────────
 # Sidebar
-# ────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("""<div style="text-align:center;margin-bottom:28px;padding-top:8px;">
 <div style="font-size:3rem;margin-bottom:4px;filter:drop-shadow(0 0 12px rgba(99,102,241,0.3));">🌊</div>
@@ -452,7 +443,7 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # Paper metrics panel
+    # Paper metrics
     st.markdown("""<div style="padding:16px;background:rgba(15,23,42,0.6);border-radius:12px;border:1px solid rgba(99,102,241,0.1);">
 <div style="font-size:0.68rem;font-weight:700;color:#818cf8;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;">📄 Paper Ground Truth</div>
 <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.8rem;">
@@ -473,9 +464,7 @@ POWERED BY TENSORFLOW + FEDERATED LEARNING
 </div>""", unsafe_allow_html=True)
 
 
-# ════════════════════════════════════════════════════════════════
-#  📡  STATION MONITOR
-# ════════════════════════════════════════════════════════════════
+# Station Monitor page
 if page == "📡 Station Monitor":
 
     st.markdown("""<div class="page-header">
@@ -483,14 +472,14 @@ if page == "📡 Station Monitor":
 <div class="page-subtitle">Real-time monitoring of all 18 client stations across India's major river basins — Ganga, Brahmaputra, Yamuna, Godavari & Mahanadi</div>
 </div>""", unsafe_allow_html=True)
 
-    # ── Danger Alerts ─────────────────────────────────────────
+    # Danger alerts
     danger_stations = [s for s in STATIONS if s["danger_alert"]]
     for s in danger_stations:
         st.markdown(f"""<div class="danger-alert">
 ⚠️ <b style="color:#fb7185">DANGER ALERT</b> — <b style="color:#f1f5f9">{s['name']}</b> ({s['river']}) inflow at <b style="color:#fb7185">{s['inflow_cusec']:,} cusecs</b> · threshold: {s['danger_threshold_cusec']:,} cusecs
 </div>""", unsafe_allow_html=True)
 
-    # ── Summary metrics ───────────────────────────────────────
+    # Summary metrics
     total = len(STATIONS)
     crit = sum(1 for s in STATIONS if s["risk_level"] == "critical")
     high = sum(1 for s in STATIONS if s["risk_level"] == "high")
@@ -507,12 +496,12 @@ if page == "📡 Station Monitor":
 
     st.markdown("")
 
-    # ── River filter ──────────────────────────────────────────
+    # River filter
     rivers = sorted(set(s["river"] for s in STATIONS))
     selected_river = st.selectbox("🏞️ Filter by River", ["All Rivers"] + rivers)
     filtered = STATIONS if selected_river == "All Rivers" else [s for s in STATIONS if s["river"] == selected_river]
 
-    # ── Station cards ─────────────────────────────────────────
+    # Station cards
     cols = st.columns(3)
     for i, s in enumerate(filtered):
         with cols[i % 3]:
@@ -545,7 +534,7 @@ if page == "📡 Station Monitor":
 
     st.markdown("")
 
-    # ── Charts ────────────────────────────────────────────────
+    # Charts
     ch1, ch2 = st.columns(2)
 
     with ch1:
@@ -593,9 +582,7 @@ if page == "📡 Station Monitor":
         st.plotly_chart(eff_fig, use_container_width=True, key="precip_eff")
 
 
-# ════════════════════════════════════════════════════════════════
-#  ⚡  RISK PREDICTOR
-# ════════════════════════════════════════════════════════════════
+# Risk Predictor page
 elif page == "⚡ Risk Predictor":
 
     st.markdown("""<div class="page-header">
@@ -614,7 +601,7 @@ elif page == "⚡ Risk Predictor":
 
     model = get_model()
 
-    # ── Sliders ───────────────────────────────────────────────
+    # Input sliders
     st.markdown('<div class="section-header">🎛️ Input Parameters</div>', unsafe_allow_html=True)
     sc1, sc2, sc3 = st.columns(3)
     with sc1:
@@ -635,7 +622,7 @@ elif page == "⚡ Risk Predictor":
     result = predict_flood_risk(model, inputs)
     st.markdown("")
 
-    # ── Probability + Forecast ────────────────────────────────
+    # Probability display
     prob = result["probability"]
     if prob < 25:
         prob_color, prob_glow = "#34d399", "rgba(52,211,153,0.3)"
@@ -678,7 +665,7 @@ elif page == "⚡ Risk Predictor":
 
     st.markdown("")
 
-    # ── Diagnostics ───────────────────────────────────────────
+    # Model diagnostics
     st.markdown('<div class="section-header">📋 Model Diagnostics</div>', unsafe_allow_html=True)
     d1, d2, d3 = st.columns(3)
     diag_data = [
@@ -691,7 +678,7 @@ elif page == "⚡ Risk Predictor":
 
     st.markdown("")
 
-    # ── Contributions ─────────────────────────────────────────
+    # Sub-model contributions
     st.markdown('<div class="section-header">🧩 Sub-Model Contributions</div>', unsafe_allow_html=True)
     contribs = result["contributions"]
     sub_colors = ["#60a5fa", "#34d399", "#fbbf24", "#fb7185"]
@@ -709,9 +696,7 @@ elif page == "⚡ Risk Predictor":
 </div>""", unsafe_allow_html=True)
 
 
-# ════════════════════════════════════════════════════════════════
-#  🔗  FL SIMULATOR
-# ════════════════════════════════════════════════════════════════
+# FL Simulator page
 elif page == "🔗 FL Simulator":
 
     st.markdown("""<div class="page-header">
@@ -723,7 +708,7 @@ elif page == "🔗 FL Simulator":
 🔒 <b style="color:#34d399;">Privacy-Preserving Protocol</b> — Only model weights are exchanged between clients and the aggregation server. Raw sensor data never leaves the local station. This is the core principle of Federated Learning.
 </div>""", unsafe_allow_html=True)
 
-    # Controls
+    # Training controls
     st.markdown('<div class="section-header">⚙️ Training Configuration</div>', unsafe_allow_html=True)
     ctrl1, ctrl2, ctrl3 = st.columns(3)
     with ctrl1:
@@ -735,7 +720,7 @@ elif page == "🔗 FL Simulator":
 
     run_btn = st.button("🚀 Start Federated Training", use_container_width=True, type="primary")
 
-    # Placeholders
+    # UI placeholders
     status_ph = st.empty()
     m_cols = st.columns(4)
     m_phs = [c.empty() for c in m_cols]
@@ -776,13 +761,13 @@ elif page == "🔗 FL Simulator":
             for ci, cl in enumerate(result["client_losses"]):
                 st.session_state.fl_log.append(f"   └─ Client {ci+1:02d} ({station_names[ci]}) loss: {cl:.4f}")
 
-            # Metrics
+            # Update metrics
             m_phs[0].markdown(f'<div class="metric-box"><div style="font-size:0.9rem;margin-bottom:4px;">🔄</div><div class="metric-value">{rnd}</div><div class="metric-label">Current Round</div></div>', unsafe_allow_html=True)
             m_phs[1].markdown(f'<div class="metric-box"><div style="font-size:0.9rem;margin-bottom:4px;">📉</div><div class="metric-value" style="font-size:1.6rem;">{result["avg_loss"]:.4f}</div><div class="metric-label">Avg Loss</div></div>', unsafe_allow_html=True)
             m_phs[2].markdown(f'<div class="metric-box"><div style="font-size:0.9rem;margin-bottom:4px;">🎯</div><div class="metric-value" style="background:linear-gradient(135deg,#34d399,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{acc_pct:.1f}%</div><div class="metric-label">Global Accuracy</div></div>', unsafe_allow_html=True)
             m_phs[3].markdown(f'<div class="metric-box"><div style="font-size:0.9rem;margin-bottom:4px;">📡</div><div class="metric-value" style="font-size:1.6rem;">{total_kb:.0f}<span style="font-size:0.8rem;"> KB</span></div><div class="metric-label">Total Transfer</div></div>', unsafe_allow_html=True)
 
-            # Loss Chart
+            # Loss chart
             rs = [r["round"] for r in st.session_state.fl_results]
             ls = [r["avg_loss"] for r in st.session_state.fl_results]
             loss_fig = go.Figure()
@@ -798,7 +783,7 @@ elif page == "🔗 FL Simulator":
                                    xaxis_title="Round", yaxis_title="Loss")
             loss_ph.plotly_chart(loss_fig, use_container_width=True, key=f"fl_loss_{rnd}")
 
-            # Accuracy Ring
+            # Accuracy ring
             ring_fig = go.Figure()
             ring_fig.add_trace(go.Pie(
                 values=[acc_pct, 100 - acc_pct], hole=0.8,
@@ -813,10 +798,10 @@ elif page == "🔗 FL Simulator":
                                                       showarrow=False)])
             acc_ph.plotly_chart(ring_fig, use_container_width=True, key=f"fl_acc_{rnd}")
 
-            # Log
+            # Training log
             log_ph.code("\n".join(st.session_state.fl_log[-30:]), language="log")
 
-            # Transfer Tracker
+            # Transfer tracker
             items = ""
             for ci in range(min(n_clients, 18)):
                 sn = station_names[ci] if ci < len(station_names) else f"Client {ci+1}"
